@@ -1,0 +1,60 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Beans Declaration -->
+    <bean id="firstTask" class="com.ehc.task.FirstTask"/>
+    <bean id="secondTask" class="com.ehc.task.SecondTask"/>
+
+    <bean id="schedulerService" class="com.ehc.service.SchedulerService">
+        <property name="firstTask" ref="firstTask"/>
+        <property name="secondTask" ref="secondTask"/>
+    </bean>
+
+    <!-- Job Detail-->
+    <bean id="firstTaskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="schedulerService"/>
+        <property name="targetMethod" value="executeFirstTask"/>
+        <property name="concurrent" value="true"/>
+    </bean>
+
+    <bean id="secondTaskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="schedulerService"/>
+        <property name="targetMethod" value="executeSecondTask"/>
+        <property name="concurrent" value="true"/>
+    </bean>
+
+    <!-- Simple Trigger -->
+    <bean id="firstSimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="firstTaskJobDetail"/>
+        <property name="repeatInterval" value="5000"/>
+        <!--<property name="startDelay" value="1000"/>-->
+    </bean>
+    <bean id="secondSimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="secondTaskJobDetail"/>
+        <property name="repeatInterval" value="6000"/>
+        <!--<property name="startDelay" value="1000"/>-->
+    </bean>
+    <!-- Cron Trigger -->
+    <!-- <bean id="secondSimpleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+         <property name="jobDetail" ref="secondTaskJobDetail"/>
+         <property name="cronExpression" value="0/12 * * * * ?"/>
+     </bean>-->
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="jobDetails">
+            <list>
+                <ref bean="firstTaskJobDetail"/>
+                <ref bean="secondTaskJobDetail"/>
+            </list>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="firstSimpleTrigger"/>
+                <ref bean="secondSimpleTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
