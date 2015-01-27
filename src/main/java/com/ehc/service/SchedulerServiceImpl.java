@@ -11,6 +11,7 @@ public class SchedulerServiceImpl implements SchedulerServiceI {
 
   public void executeScheduleTask() {
     getSchedulerTask().spendBasedLoyalty();
+
   }
 
 
