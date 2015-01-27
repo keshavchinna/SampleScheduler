@@ -10,6 +10,6 @@ public class NotifierTask {
   private static Logger log = Logger.getLogger(NotifierTask.class);
 
   public void execute() {
-    log.debug(new Date() + " :SecondTask runs successfully...");
+    log.debug(new Date() + " :Notifier runs successfully...");
   }
 }

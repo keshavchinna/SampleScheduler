@@ -10,7 +10,7 @@ public class SchedulerServiceImpl implements SchedulerServiceI {
 
 
   public void executeScheduleTask() {
-    getSchedulerTask().executeFirst();
+    getSchedulerTask().spendBasedLoyalty();
   }
 
 

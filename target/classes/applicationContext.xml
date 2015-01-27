@@ -4,37 +4,37 @@
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <!-- Beans Declaration -->
-    <bean id="firstTask" class="com.ehc.task.FirstTask"/>
-    <bean id="secondTask" class="com.ehc.task.SecondTask"/>
+    <bean id="schedulerTask" class="com.ehc.task.schedulerTask"/>
+    <bean id="notifierTask" class="com.ehc.task.NotifierTask"/>
 
-    <bean id="schedulerService" class="com.ehc.service.SchedulerService">
-        <property name="firstTask" ref="firstTask"/>
-        <property name="secondTask" ref="secondTask"/>
+    <bean id="schedulerService" class="com.ehc.service.SchedulerServiceImpl">
+        <property name="schedulerTask" ref="schedulerTask"/>
+        <property name="notifierTask" ref="notifierTask"/>
     </bean>
 
     <!-- Job Detail-->
-    <bean id="firstTaskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <bean id="schedulerTaskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="schedulerService"/>
-        <property name="targetMethod" value="executeFirstTask"/>
+        <property name="targetMethod" value="executeScheduleTask"/>
         <property name="concurrent" value="true"/>
     </bean>
 
-    <bean id="secondTaskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <bean id="notifierTaskJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="schedulerService"/>
-        <property name="targetMethod" value="executeSecondTask"/>
+        <property name="targetMethod" value="executeNotificationTask"/>
         <property name="concurrent" value="true"/>
     </bean>
 
     <!-- Simple Trigger -->
-    <bean id="firstSimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="firstTaskJobDetail"/>
+    <bean id="schedulerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="schedulerTaskJobDetail"/>
         <property name="repeatInterval" value="5000"/>
-        <!--<property name="startDelay" value="1000"/>-->
+        <property name="startDelay" value="1000"/>
     </bean>
-    <bean id="secondSimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="secondTaskJobDetail"/>
+    <bean id="notifierTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="notifierTaskJobDetail"/>
         <property name="repeatInterval" value="6000"/>
-        <!--<property name="startDelay" value="1000"/>-->
+        <property name="startDelay" value="1000"/>
     </bean>
     <!-- Cron Trigger -->
     <!-- <bean id="secondSimpleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -45,14 +45,14 @@
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
-                <ref bean="firstTaskJobDetail"/>
-                <ref bean="secondTaskJobDetail"/>
+                <ref bean="schedulerTaskJobDetail"/>
+                <ref bean="notifierTaskJobDetail"/>
             </list>
         </property>
         <property name="triggers">
             <list>
-                <ref bean="firstSimpleTrigger"/>
-                <ref bean="secondSimpleTrigger"/>
+                <ref bean="schedulerTrigger"/>
+                <ref bean="notifierTrigger"/>
             </list>
         </property>
     </bean>
